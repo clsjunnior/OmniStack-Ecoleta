@@ -7,6 +7,7 @@ import axios from 'axios';
 import api from '../../services/api';
 
 import Dropzone from '../../components/dropzone';
+import AlertSuccess from '../../components/alertSucess';
 
 import './styles.css';
 
@@ -32,6 +33,7 @@ const CreatePoint = () => {
   const [ufs, setUfs] = useState<string[]>([]);
   const [cities, setCities] = useState<string[]>([]);
   const [selectedItems, setSelectedItems] = useState<number[]>([]);
+  const [showAlert, setShowAlert] = useState(false);
 
   const [formData, setFormData] = useState({
     name: '',
@@ -149,11 +151,11 @@ const CreatePoint = () => {
 
     if (selectedFile) data.append('image', selectedFile);
 
-    await api.post('points', data);
+    const resp = await api.post('points', data);
 
-    alert('Ponto de coleta criado!');
-
-    history.push('/');
+    if (resp.statusText === 'OK') {
+      setShowAlert(true);
+    }
   }
 
   return (
@@ -282,6 +284,10 @@ const CreatePoint = () => {
 
         <button type="submit">Cadastrar ponto de coleta</button>
       </form>
+      <AlertSuccess
+        Mensagem="Cadastro realizado com sucesso!"
+        Show={showAlert}
+      />
     </div>
   );
 };
